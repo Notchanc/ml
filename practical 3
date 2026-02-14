@@ -48,3 +48,18 @@ def porter_stem(sent):
 df['imp_feature'] = df['EmailText'].apply(get_importantFeatures)
 df['imp_feature'] = df['imp_feature'].apply(removing_stopwords)
 df['imp_feature'] = df['imp_feature'].apply(porter_stem)
+
+from sklearn.model_selection import train_test_split
+X = df['imp_feature']
+y = df['Label']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+tfidf = TfidfVectorizer()
+feature = tfidf.fit_transform(X_train)
+model = svm.SVC()
+model.fit(feature, y_train)
+
+y_predict = tfidf.transform(x_test)
+print("Accuracy:",model.score(y_predict,y_test))
