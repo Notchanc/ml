@@ -34,7 +34,7 @@ df.head()
 
 df1 = df.drop('Surname', axis=1)
 
-xdf1 = df[['Exited', 'Geography']]      # Note: variable xdf1 is defined but later 'x' is used
+x=df1.drop('Exited',axis=1)      # Note: variable xdf1 is defined but later 'x' is used
 y = df1['Exited']
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=1)   # 'x' is not defined; likely a typo
