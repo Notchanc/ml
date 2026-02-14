@@ -1,0 +1,47 @@
+Aim: Implementing a K-Nearest Neighbor (KNN) algorithm (e.g. to classify handwritten digits).
+
+code=
+
+  from sklearn.datasets import load_digits
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
+digits = load_digits()
+
+x = digits.data
+y = digits.target
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
+
+knn = KNeighborsClassifier(n_neighbors=3)
+
+knn.fit(x_train, y_train)
+
+y_pred = knn.predict(x_test)
+
+acc = accuracy_score(y_test, y_pred)
+print("Accuracy:", acc)
+
+print("Actual value:", y_test[0])
+print("Predicted value:", knn.predict([x_test[0]]))
+
+
+output=
+
+KNeighborsClassifier
+KNeighborsClassifier(n_neighbors=3)
+
+array([2, 8, 2, 6, 6, 7, 1, 9, 8, 5, 2, 8, 6, 6, 6, 6, 1, 0, 5, 8, 8, 7,
+    8, 4, 7, 5, 4, 9, 2, 9, 4, 7, 6, 8, 9, 4, 3, 1, 0, 1, 8, 6, 7, 7,
+    1, 0, 7, 6, 2, 1, 9, 6, 7, 9, 0, 0, 5, 1, 6, 3, 0, 2, 3, 4, 1, 9,
+    2, 6, 9, 1, 8, 3, 5, 1, 2, 8, 2, 2, 9, 7, 2, 3, 6, 0, 5, 3, 7, 5,
+    1, 2, 9, 9, 3, 1, 7, 7, 4, 8, 5, 8, 5, 5, 2, 5, 9, 0, 7, 1, 4, 7,
+    3, 4, 8, 9, 7, 9, 8, 2, 6, 5, 2, 5, 3, 4, 8, 7, 0, 6, 1, 5, 9, 9,
+    9, 5, 9, 9, 5, 7, 5, 6, 2, 8, 6, 9, 6, 1, 5, 1, 5, 9, 9, 1, 5, 3,
+    6, 1, 8, 9, 8, 7, 6, 7, 6, 5, 6, 0, 8, 8, 9, 3, 6, 1, 0, 4, 1, 6,
+
+Accuracy: 0.9833333333333333
+
+Actual value: 2
+Predicted value: [2]
