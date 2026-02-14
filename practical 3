@@ -1,1 +1,50 @@
+Aim: Developing a Support Vector Machine (SVM) model (e.g. to classify email messages as spam or not spam).
 
+
+
+code=
+
+import numpy as np
+from sklearn.preprocessing import LabelEncoder
+import pandas as pd
+import nltk
+import string
+from sklearn import svm
+
+df = pd.read_csv('spam.csv')
+df
+
+encoder = LabelEncoder()
+df['Label'] = encoder.fit_transform(df['Label'])
+
+df = df.drop_duplicates()
+df.shape
+
+from nltk.stem.porter import PorterStemmer
+ps = PorterStemmer()
+
+def get_importantFeatures(sent):
+    sent = sent.lower()
+    returnList = []
+    sent = nltk.word_tokenize(sent)
+    for i in sent:
+        if i.isalnum():
+            returnList.append(i)
+    return returnList
+
+def removing_stopwords(sent):
+    returnList = []
+    for i in sent:
+        if i not in nltk.corpus.stopwords.words('english') and i not in string.punctuation:
+            returnList.append(i)
+    return returnList
+
+def porter_stem(sent):
+    returnList = []
+    for i in sent:
+        returnList.append(ps.stem(i))
+    return " ".join(returnList)
+
+df['imp_feature'] = df['EmailText'].apply(get_importantFeatures)
+df['imp_feature'] = df['imp_feature'].apply(removing_stopwords)
+df['imp_feature'] = df['imp_feature'].apply(porter_stem)
