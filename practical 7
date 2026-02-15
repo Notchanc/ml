@@ -3,33 +3,50 @@ Aim: Evaluating a classification model using metrics such as accuracy, precision
 code=
 
 import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_score, recall_score, fl_score
-from sklearn.preprocessing import LabelEncoder
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
-df = pd.read_csv('heart.csv')
-df.head()
-df.shape
-df.info()
-df.isna().sum()
-df.describe()
-df.duplicated().sum()
+# Load dataset
+df = pd.read_csv('heart (1).csv')
+
+# Initial exploration (optional)
+print(df.head())
+print(df.shape)
+print(df.info())
+print(df.isna().sum())
+print(df.describe())
+print(df.duplicated().sum())
+
+# Encode categorical columns if any
 le = LabelEncoder()
 for column in df.select_dtypes(include=['object']):
     df[column] = le.fit_transform(df[column])
-df.head()
+
+# Split features and target
 x = df.drop('HeartDisease', axis=1)
 y = df['HeartDisease']
+
+# Train-test split (stratify to maintain class balance)
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8, stratify=y, random_state=42)
-lr = LogisticRegression()
-lr.fit(x_train, y_train)
-y_pred = lr.predict(x_test)
-y_pred
-confusion_matrix(y_test, y_pred)
-accuracy_score(y_test, y_pred_lr)
+
+# Feature scaling (helps logistic regression converge faster and avoid warnings)
+scaler = StandardScaler()
+x_train_scaled = scaler.fit_transform(x_train)
+x_test_scaled = scaler.transform(x_test)
+
+# Logistic regression with increased max_iter
+lr = LogisticRegression(max_iter=1000, random_state=42)
+lr.fit(x_train_scaled, y_train)
+
+# Predictions
+y_pred = lr.predict(x_test_scaled)
+
+# Evaluation
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("\nAccuracy Score:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
