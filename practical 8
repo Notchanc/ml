@@ -7,47 +7,54 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import plotly as py
-import plotly.graph_objs as go
-
-from sklearn.preprocessing import LabelEncoder
-import scipy.cluster.hierarchy as sch
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.cluster import AgglomerativeClustering
+import scipy.cluster.hierarchy as sch
 
+# Load data
 df = pd.read_csv('Mall_Customers.csv')
 
-df.head()
-df.info()
-df.isna().sum()
-df.describe()
-df.duplicated().sum()
+# Quick exploration
+print(df.head())
+print(df.info())
+print(df.isna().sum())
+print(df.describe())
+print(df.duplicated().sum())
 
+# Encode Gender
 le = LabelEncoder()
 df['Gender'] = le.fit_transform(df['Gender'])
-df.head()
 
-plt.figure(1, figsize = (16 ,8))
-dendrogram = sch.dendrogram(sch.linkage(df, method = "ward"))
+# Drop CustomerID (irrelevant for clustering) and select features for clustering
+features = df[['Gender', 'Age', 'Annual Income (k$)', 'Spending Score (1-100)']]
 
+# Optional: Scale features to have equal influence
+scaler = StandardScaler()
+features_scaled = scaler.fit_transform(features)
+
+# Dendrogram (using scaled features)
+plt.figure(1, figsize=(16, 8))
+dendrogram = sch.dendrogram(sch.linkage(features_scaled, method='ward'))
 plt.title('Dendrogram')
 plt.xlabel('Customers')
 plt.ylabel('Euclidean distances')
 plt.show()
 
-hc = AgglomerativeClustering(n_clusters = 5, affinity = 'euclidean', linkage = 'average')
+# Hierarchical clustering with corrected parameter
+hc = AgglomerativeClustering(n_clusters=5, metric='euclidean', linkage='average')
+y_hc = hc.fit_predict(features_scaled)   # or use features_scaled
 
-y_hc = hc.fit_predict(df)
-y_hc
+# Add cluster labels to original dataframe
+df['cluster'] = y_hc
 
-df['cluster'] = pd.DataFrame(y_hc)
-
-X = df.iloc[:, [3,4]].values
-plt.scatter(X[y_hc==0, 0], X[y_hc==0, 1], s=100, c='red', label = 'Cluster 1')
-plt.scatter(X[y_hc==1, 0], X[y_hc==1, 1], s=100, c='blue', label = 'Cluster 2')
-plt.scatter(X[y_hc==2, 0], X[y_hc==2, 1], s=100, c='green', label = 'Cluster 3')
-plt.scatter(X[y_hc==3, 0], X[y_hc==3, 1], s=100, c='purple', label = 'Cluster 4')
-plt.scatter(X[y_hc==4, 0], X[y_hc==4, 1], s=100, c='orange', label = 'Cluster 5')
+# Visualize clusters using Annual Income and Spending Score
+X = df.iloc[:, [3, 4]].values   # Annual Income (k$), Spending Score (1-100)
+plt.figure(figsize=(10, 6))
+colors = ['red', 'blue', 'green', 'purple', 'orange']
+for i in range(5):
+    plt.scatter(X[y_hc == i, 0], X[y_hc == i, 1], s=100, c=colors[i], label=f'Cluster {i+1}')
 plt.title('Clusters of Customers (Hierarchical Clustering Model)')
-plt.xlabel('Annual Income(K$)')
-plt.ylabel('Spending Score(1-100)')
+plt.xlabel('Annual Income (k$)')
+plt.ylabel('Spending Score (1-100)')
+plt.legend()
 plt.show()
