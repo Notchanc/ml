@@ -9,65 +9,74 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.cluster import KMeans
 import plotly as py
+import plotly.graph_objs as go
+from plotly.offline import iplot   # or use py.offline.iplot
 
+# Install plotly if needed (for Jupyter environments)
 !pip install plotly
 
+# Load dataset
 df = pd.read_csv('Mall_Customers.csv')
-df.head()
-df.shape
-df.info()
-df.describe()
-df.isna().sum()
+
+# Quick exploration
+print(df.head())
+print(df.shape)
+print(df.info())
+print(df.describe())
+print(df.isna().sum())
+
+# Pairplot
 sns.pairplot(df, hue='Gender')
 
+# Select features
 x = df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']]
+
+# Elbow method
 inertia = []
 for n in range(1, 11):
-    algorithm = (KMeans(n_clusters = n, init='k-means++', n_init = 10, random_state=111, algorithm='elkan'))
-    algorithm.fit(x)
-    inertia.append(algorithm.inertia_)
+    kmeans = KMeans(n_clusters=n, init='k-means++', n_init=10, random_state=111, algorithm='elkan')
+    kmeans.fit(x)
+    inertia.append(kmeans.inertia_)
 
-plt.figure(1, figsize = (15 ,6))
-plt.plot(np.arange(1 , 11) , inertia , 'o')
-plt.plot(np.arange(1 , 11) , inertia , '-', alpha = 0.5)
-plt.xlabel('Number of Clusters') , plt.ylabel('Inertia')
+plt.figure(1, figsize=(15, 6))
+plt.plot(np.arange(1, 11), inertia, 'o')
+plt.plot(np.arange(1, 11), inertia, '-', alpha=0.5)
+plt.xlabel('Number of Clusters')
+plt.ylabel('Inertia')
 plt.show()
 
-algorithm = (KMeans(n_clusters = 6 ,init='k-means++', n_init = 10 ,random_state= 111 , algorithm='elchan') )
-algorithm.fit(x)
-labels = algorithm.labels_
-centroids = algorithm.cluster_centers_
-y_kmeans = algorithm.fit_predict(x)
-df['cluster'] = pd.DataFrame(y_kmeans)
-df.head()
+# Choose 6 clusters (based on elbow plot)
+kmeans = KMeans(n_clusters=6, init='k-means++', n_init=10, random_state=111, algorithm='elkan')
+y_kmeans = kmeans.fit_predict(x)      # fits and returns labels
+centroids = kmeans.cluster_centers_
 
-import plotly.graph_objs as go
+# Add cluster labels to original dataframe
+df['cluster'] = y_kmeans
+print(df.head())
 
+# 3D scatter plot with Plotly
 trace1 = go.Scatter3d(
-    x= df['Age'],
-    y= df['Spending Score (1-100)'],
-    z= df['Annual Income (k$)'],
+    x=df['Age'],
+    y=df['Spending Score (1-100)'],
+    z=df['Annual Income (k$)'],
     mode='markers',
     marker=dict(
-        color = df['cluster'],
-        size= 10,
-        line=dict(
-            color= df['cluster'],
-            width= 12
-        ),
+        color=df['cluster'],
+        size=10,
+        line=dict(color=df['cluster'], width=12),
         opacity=0.8
     )
 )
 
 data = [trace1]
 layout = go.Layout(
-    title= 'Clusters wrt Age, Income and Spending Scores',
-    scene= dict(
-        xaxis = dict(title = 'Age'),
-        yaxis = dict(title = 'Spending Score'),
-        zaxis = dict(title = 'Annual Income')
+    title='Clusters wrt Age, Income and Spending Scores',
+    scene=dict(
+        xaxis=dict(title='Age'),
+        yaxis=dict(title='Spending Score'),
+        zaxis=dict(title='Annual Income')
     )
 )
 
 fig = go.Figure(data=data, layout=layout)
-py.offline.iplot(fig)
+py.offline.iplot(fig)   # or iplot(fig) if you imported iplot directly
