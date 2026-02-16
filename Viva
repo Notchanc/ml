@@ -1,0 +1,46 @@
+Good luck with your Machine Learning practical exam! Since you're at Pillai HOC College for your TY BSc, these questions are designed to cover the fundamental "viva-style" concepts and formulas for each of your 10 experiments.
+1. K-Nearest Neighbors (KNN)
+ * Definition: A non-parametric, lazy learning algorithm that classifies a data point based on how its neighbors are classified.
+ * Formula (Euclidean Distance): The most common way to calculate the "closeness" between two points (x_1, y_1) and (x_2, y_2) is:
+   
+ * Key Concept: K represents the number of nearest neighbors to consider. A small K can be sensitive to noise, while a large K might include points from other classes.
+2. Decision Tree (ID3 Algorithm)
+ * Definition: A flowchart-like structure where internal nodes represent features, branches represent decision rules, and leaf nodes represent outcomes.
+ * Formula (Entropy): Measures the impurity or randomness in the dataset.
+   
+ * Formula (Information Gain): Used by ID3 to decide which attribute to split on.
+   
+3. Support Vector Machine (SVM)
+ * Definition: A supervised learning model that finds the optimal hyperplane which maximizes the margin between two classes.
+ * Key Concept (The Kernel Trick): A method used to project non-linearly separable data into a higher-dimension space where it becomes linearly separable.
+4. Naive Bayes Classifier
+ * Definition: A probabilistic classifier based on Bayes' Theorem with the "naive" assumption of independence between every pair of features.
+ * Formula (Bayes' Theorem):
+   
+5. Linear Regression
+ * Definition: A statistical method to model the relationship between a dependent variable and one or more independent variables by fitting a linear equation.
+ * Formula (Simple Linear Regression):
+   
+   
+   (Where m is the slope and c is the y-intercept)
+6. Logistic Regression
+ * Definition: Despite the name, it's a classification algorithm used to predict the probability of a binary outcome (1/0, Yes/No).
+ * Formula (Sigmoid Function): Maps any real-valued number into a value between 0 and 1.
+   
+7. Classification Metrics
+ * Accuracy: \frac{TP + TN}{Total}
+ * Precision: \frac{TP}{TP + FP} (Focuses on: "Of all predicted positives, how many were correct?")
+ * Recall (Sensitivity): \frac{TP}{TP + FN} (Focuses on: "Of all actual positives, how many did we catch?")
+ * F1-Score: The harmonic mean of Precision and Recall:
+   
+8. Hierarchical Clustering
+ * Definition: A clustering method that seeks to build a hierarchy of clusters. It doesn't require the number of clusters (K) to be pre-defined.
+ * Key Concept (Dendrogram): A tree-like diagram that records the sequences of merges or splits.
+9. K-Means Clustering
+ * Definition: An unsupervised algorithm that partitions data into K distinct, non-overlapping subgroups (clusters) by minimizing the distance between points and their cluster centroid.
+ * The Process: 1. Initialize centroids \rightarrow 2. Assign points to nearest centroid \rightarrow 3. Recompute centroids \rightarrow 4. Repeat until convergence.
+10. Principal Component Analysis (PCA)
+ * Definition: A dimensionality reduction technique that transforms a large set of variables into a smaller one that still contains most of the original information.
+ * Key Concept: It identifies "Principal Components," which are new variables that are linear combinations of the original variables and are uncorrelated with each other.
+Quick Tip for your Viva: Examiners often ask why you chose a specific algorithm. For example, "Why Naive Bayes for text?" (Answer: Because it's fast and handles high-dimensional independent features well).
+Would you like me to explain the Python code logic for any of these specific experiments?
